@@ -1,0 +1,18 @@
+{
+    "elements": [
+        {
+            "type": "NumberSpinner",
+            "caption": "Interval",
+            "name": "Poller",
+            "suffix": "seconds"
+        }
+    ],
+    "actions": [
+        {
+            "type": "Button",
+            "caption": "Request Data",
+            "name": "RequestData",
+            "onClick": "LTBAT_RequestData($id);"
+        }
+    ]
+}
