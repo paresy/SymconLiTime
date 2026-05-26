@@ -1,0 +1,16 @@
+{
+    "id": "{D8A9B0C1-E2F3-4567-89AB-CDEF01234567}",
+    "name": "LiTime Battery",
+    "type": 3,
+    "vendor": "LiTime",
+    "aliases": ["LiTime Battery Monitor"],
+    "prefix": "LTBAT",
+    "url": "https://www.maroszek.de",
+    "parentRequirements": [
+        "{C3D4E5F6-7A8B-9C0D-1E2F-3A4B5C6D7E8F}"
+    ],
+    "childRequirements": [],
+    "implemented": [
+        "{A6E2B2F0-4B7A-4E3C-9C1D-8F5A3D6E7B90}"
+    ]
+}
