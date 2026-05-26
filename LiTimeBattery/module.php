@@ -9,7 +9,8 @@ class LiTimeBattery extends IPSModuleStrict
     private const BT_TX_GUID = '{C3D4E5F6-7A8B-9C0D-1E2F-3A4B5C6D7E8F}';
     private const BT_RX_GUID = '{A6E2B2F0-4B7A-4E3C-9C1D-8F5A3D6E7B90}';
 
-    private const REQUEST_UUID = 'FFE2';
+    private const REQUEST_TX_UUID = 'FFE1';
+    private const REQUEST_RX_UUID = 'FFE2';
     private const REQUEST_PAYLOAD = "\x00\x00\x04\x01\x13\x55\xAA\x17";
 
     public function Create(): void
@@ -17,8 +18,6 @@ class LiTimeBattery extends IPSModuleStrict
         parent::Create();
 
         $this->RegisterPropertyInteger('Poller', 30);
-
-        $this->RegisterTimer('PollTimer', 0, 'LTBAT_RequestData(' . $this->InstanceID . ');');
 
         // Battery state
         $this->RegisterVariableInteger('SOC', $this->Translate('State of Charge'), '~Battery.100', 0);
@@ -36,19 +35,24 @@ class LiTimeBattery extends IPSModuleStrict
 
         // Cycles
         $this->RegisterVariableInteger('CycleCount', $this->Translate('Cycle Count'), '', 8);
+
+        // Timer
+        $this->RegisterTimer('Update', 0, 'LTBAT_RequestData($_IPS[\'TARGET\']);');
     }
 
     public function ApplyChanges(): void
     {
         parent::ApplyChanges();
 
-        $interval = $this->ReadPropertyInteger('Poller');
-        $this->SetTimerInterval('PollTimer', $this->HasActiveParent() ? $interval * 1000 : 0);
+        $this->SetTimerInterval('Update', $this->HasActiveParent() ? $this->ReadPropertyInteger('Poller') * 1000 : 0);
     }
 
     public function ReceiveData(string $JSONString): string
     {
         $data = json_decode($JSONString, true);
+
+        $this->SendDebug('ReceivedData', $data['Buffer'], 1);
+
         $battery = LiTimeParser::parse($data['Buffer']);
         $this->SetValue('SOC', $battery->soc);
         $this->SetValue('TotalVoltage', $battery->totalVoltage);
@@ -78,7 +82,13 @@ class LiTimeBattery extends IPSModuleStrict
 
         $this->SendDataToParent(json_encode([
             'DataID'   => self::BT_TX_GUID,
-            'UUID'     => self::REQUEST_UUID,
+            'UUID'     => self::REQUEST_TX_UUID,
+            'Buffer'   => "",
+        ]));
+
+        $this->SendDataToParent(json_encode([
+            'DataID'   => self::BT_TX_GUID,
+            'UUID'     => self::REQUEST_RX_UUID,
             'Buffer'   => self::REQUEST_PAYLOAD,
         ]));
     }
