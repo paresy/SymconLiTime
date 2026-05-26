@@ -90,7 +90,7 @@ class LiTimeBattery extends IPSModuleStrict
         $this->SendDataToParent(json_encode([
             'DataID'   => self::BT_TX_GUID,
             'UUID'     => self::REQUEST_RX_UUID,
-            'Buffer'   => self::REQUEST_PAYLOAD,
+            'Buffer'   => bin2hex(self::REQUEST_PAYLOAD),
         ]));
     }
 }
