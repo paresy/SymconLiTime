@@ -63,7 +63,7 @@ class LiTimeBattery extends IPSModuleStrict
     {
         parent::ApplyChanges();
 
-        $this->SetTimerInterval('Update', $this->HasActiveParent() ? $this->ReadPropertyInteger('Poller') * 1000 : 0);
+        $this->SetTimerInterval('Update', $this->ReadPropertyInteger('Poller') * 1000);
     }
 
     public function ReceiveData(string $JSONString): string
