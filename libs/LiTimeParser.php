@@ -44,6 +44,20 @@ class LiTimeParser
 
         $d = self::toBytes($payload);
 
+        //
+        // CRC check: last byte must equal sum of all preceding bytes & 0xFF
+        //
+        $crcPacket = $d[$len - 1];
+        $crcCalc = 0;
+        for ($i = 0; $i < $len - 1; $i++) {
+            $crcCalc += $d[$i];
+        }
+        $crcCalc &= 0xFF;
+
+        if ($crcPacket !== $crcCalc) {
+            throw new Exception("CRC mismatch: expected 0x" . dechex($crcCalc) . ", got 0x" . dechex($crcPacket));
+        }
+
         $b = new LiTimeBatteryData();
         $b->rawHex = bin2hex($payload);
 
