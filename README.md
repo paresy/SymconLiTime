@@ -1,0 +1,1 @@
+This module is based on https://github.com/dmytro-tsepilov/pq_bms_bluetooth and was ported to PHP and Symcon. The license is also GPL-3.
