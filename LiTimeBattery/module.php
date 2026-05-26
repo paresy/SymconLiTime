@@ -50,10 +50,11 @@ class LiTimeBattery extends IPSModuleStrict
     public function ReceiveData(string $JSONString): string
     {
         $data = json_decode($JSONString, true);
+        $buffer = hex2bin($data['Buffer']);
 
-        $this->SendDebug('ReceivedData', $data['Buffer'], 1);
+        $this->SendDebug('Received', $buffer, 1);
 
-        $battery = LiTimeParser::parse($data['Buffer']);
+        $battery = LiTimeParser::parse($buffer);
         $this->SetValue('SOC', $battery->soc);
         $this->SetValue('TotalVoltage', $battery->totalVoltage);
         $this->SetValue('CellVoltageSum', $battery->cellVoltageSum);
